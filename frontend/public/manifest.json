@@ -1,0 +1,17 @@
+{
+  "short_name": "MindSaathi",
+  "name": "MindSaathi - Elderly Cognitive & Memory Companion",
+  "description": "Assistive cognitive gaming, gentle routine reminders, and caregiver connection for elderly individuals in the North Eastern Region.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#F7F9F6",
+  "theme_color": "#2D6A4F",
+  "display": "standalone",
+  "orientation": "portrait"
+}

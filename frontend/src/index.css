@@ -1,0 +1,842 @@
+/* ==========================================================================
+   MINDSAATHI — LIVING MEMORY GARDEN
+   A warm, peaceful, elderly-accessible wellness design system for SIH26003.
+   ========================================================================== */
+
+:root {
+  /* Living Memory Garden Color System */
+  --bg-main: #FFF9F0;          /* Warm Ivory / Cream */
+  --bg-surface: #FFFDF8;       /* Soft Cream */
+  --bg-card: #FFFFFF;          /* Pure Card Surface */
+  --bg-subtle: #F6EFE6;        /* Subtle warm tint */
+
+  --text-main: #294438;        /* Deep Forest */
+  --text-muted: #536B5E;       /* Muted Forest */
+  --text-subtle: #7D9285;      /* Subtle Forest */
+  --text-inverse: #FFFFFF;     /* High Contrast White */
+
+  --primary: #6E8B74;          /* Sage Green */
+  --primary-dark: #294438;     /* Deep Forest Accent */
+  --primary-light: #8BA891;    /* Light Sage */
+  --primary-soft: #E4F0E6;     /* Soft Mint */
+  --primary-wash: #F0F6F1;     /* Wash Mint */
+
+  --secondary: #C97A5A;        /* Soft Terracotta */
+  --secondary-light: #DE9376;  /* Light Terracotta */
+  --secondary-soft: #F5E0D8;   /* Soft Rose / Terracotta tint */
+
+  --accent-gold: #E5B85C;      /* Muted Marigold */
+  --accent-gold-soft: #FBF2DE; /* Soft Marigold */
+  --accent-lavender: #A99BCB;  /* Soft Lavender */
+  --accent-lavender-soft: #F1EDF8;
+  --accent-blue: #709CB5;      /* River Blue */
+  --accent-blue-soft: #E5EFF4;
+
+  --success: #528A66;          /* Foliage Green */
+  --warning: #D98836;          /* Amber Warmth */
+  --danger: #BD5343;           /* Earth Red */
+
+  --border: #E8DCCF;           /* Warm Earth Border */
+  --border-subtle: #F0E6DA;    /* Faint Warm Border */
+  --border-focus: #6E8B74;     /* Sage Focus */
+
+  /* Shadows - Organic, soft, non-digital */
+  --shadow-sm: 0 2px 4px rgba(41, 68, 56, 0.04);
+  --shadow-card: 0 4px 18px rgba(41, 68, 56, 0.06), 0 1px 3px rgba(41, 68, 56, 0.03);
+  --shadow-hover: 0 10px 28px rgba(41, 68, 56, 0.1), 0 2px 6px rgba(41, 68, 56, 0.05);
+  --shadow-pill: 0 2px 8px rgba(41, 68, 56, 0.08);
+
+  /* Rounded Radii - Mature, organic pebbles */
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --radius-xl: 34px;
+  --radius-full: 9999px;
+
+  /* Typography Scale - Elderly-friendly standard */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Outfit', 'Inter', system-ui, sans-serif;
+  
+  --font-size-base: 18px;
+  --line-height-base: 1.65;
+  --btn-min-height: 60px;
+}
+
+/* High Contrast Mode - Accessible Deep Earth Palette */
+body.high-contrast {
+  --bg-main: #13221C;
+  --bg-surface: #1B2D26;
+  --bg-card: #1F362D;
+  --bg-subtle: #294438;
+  --text-main: #FFF9F0;
+  --text-muted: #E4F0E6;
+  --text-subtle: #C3D9C9;
+  --primary: #A2C2A8;
+  --primary-dark: #D4E6D8;
+  --primary-soft: #294438;
+  --secondary: #EBB098;
+  --secondary-soft: #3D2922;
+  --accent-gold: #F2CF84;
+  --accent-gold-soft: #382E1A;
+  --border: #405F51;
+  --border-subtle: #304C3F;
+  --shadow-card: 0 0 0 2px #E4F0E6;
+}
+
+/* Font Sizing Controls for Elderly Comfort */
+body.font-scale-lg {
+  --font-size-base: 21px;
+  --btn-min-height: 68px;
+}
+
+body.font-scale-xl {
+  --font-size-base: 24px;
+  --btn-min-height: 76px;
+}
+
+/* Global Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(228, 240, 230, 0.45) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(245, 224, 216, 0.4) 0%, transparent 45%);
+  background-attachment: fixed;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-heading);
+  color: var(--text-main);
+  font-weight: 700;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+}
+
+p {
+  color: var(--text-muted);
+}
+
+/* Layout */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  max-width: 1220px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4.5rem 1.25rem;
+}
+
+/* Living Memory Garden Header / Navbar */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 253, 248, 0.94);
+  backdrop-filter: blur(14px);
+  border-bottom: 1.5px solid var(--border-subtle);
+  padding: 0.85rem 1.75rem;
+  box-shadow: 0 2px 10px rgba(41, 68, 56, 0.03);
+}
+
+.nav-inner {
+  max-width: 1220px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: var(--text-main);
+  font-family: var(--font-heading);
+}
+
+.brand-icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-md);
+  background: var(--primary-soft);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid rgba(110, 139, 116, 0.25);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease;
+}
+
+.nav-brand:hover .brand-icon-box {
+  transform: scale(1.05);
+}
+
+.brand-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.brand-subtitle {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.nav-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: var(--text-main);
+  background: transparent;
+  border: 1.5px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.nav-link-btn:hover {
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+}
+
+.nav-link-btn.active {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+  box-shadow: var(--shadow-pill);
+}
+
+.accessibility-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.control-btn {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 0.55rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text-main);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.control-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+}
+
+.control-btn.active {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+}
+
+/* ==========================================================================
+   Tactile Elderly Action Buttons & Cards
+   ========================================================================== */
+.btn-elderly {
+  min-height: var(--btn-min-height);
+  padding: 0.9rem 1.8rem;
+  border-radius: var(--radius-full);
+  font-size: 1.18rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.16s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s, background-color 0.2s;
+  user-select: none;
+}
+
+.btn-elderly:hover {
+  transform: translateY(-2.5px);
+  box-shadow: var(--shadow-hover);
+}
+
+.btn-elderly:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-elderly:focus-visible {
+  outline: 4px solid var(--accent-gold);
+  outline-offset: 3px;
+}
+
+/* Button Variants */
+.btn-primary-garden {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+}
+
+.btn-primary-garden:hover {
+  background: #5D7762;
+}
+
+.btn-terracotta {
+  background: var(--secondary);
+  color: #FFFFFF;
+  border-color: var(--secondary);
+}
+
+.btn-terracotta:hover {
+  background: #B66B4C;
+}
+
+.btn-cream-action {
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border-color: var(--border);
+}
+
+.btn-cream-action:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+}
+
+.btn-taken {
+  background: var(--success);
+  color: #FFFFFF;
+  border-color: var(--success);
+}
+
+.btn-taken:hover {
+  background: #437153;
+}
+
+.btn-snooze {
+  background: var(--accent-gold-soft);
+  color: #925C13;
+  border-color: rgba(217, 136, 54, 0.4);
+}
+
+.btn-snooze:hover {
+  background: #F8E6C4;
+}
+
+.btn-skip {
+  background: var(--secondary-soft);
+  color: #983C2F;
+  border-color: rgba(189, 83, 67, 0.35);
+}
+
+.btn-skip:hover {
+  background: #F3CFC4;
+}
+
+/* ==========================================================================
+   Memory Garden Signature Container & Cards
+   ========================================================================== */
+.garden-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  border: 1.5px solid var(--border);
+  padding: 2.25rem;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.garden-card:hover {
+  border-color: rgba(110, 139, 116, 0.4);
+}
+
+/* Big 4 Elderly Action Cards Grid */
+.elder-quad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.elder-action-box {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2rem 1.75rem;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-decoration: none;
+  color: var(--text-main);
+  box-shadow: var(--shadow-card);
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.elder-action-box:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--primary);
+}
+
+.elder-action-box:focus-visible {
+  outline: 4px solid var(--accent-gold);
+  outline-offset: 3px;
+}
+
+.elder-action-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.elder-action-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.35rem;
+  line-height: 1.15;
+}
+
+.elder-action-sub {
+  font-size: 1.12rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.elder-action-badge {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: var(--accent-gold-soft);
+  color: #8C5611;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.95rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(229, 184, 92, 0.4);
+}
+
+/* ==========================================================================
+   Today's Journey Timeline Component
+   ========================================================================== */
+.journey-container {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2.25rem;
+  box-shadow: var(--shadow-card);
+  margin: 2rem 0;
+}
+
+.journey-timeline {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  position: relative;
+  margin-top: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.journey-step {
+  flex: 1;
+  min-width: 200px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, border-color 0.2s;
+}
+
+.journey-step.active {
+  border-color: var(--primary);
+  background: #FFFFFF;
+  box-shadow: 0 6px 20px rgba(110, 139, 116, 0.15);
+}
+
+.journey-step.completed {
+  border-color: var(--primary-light);
+  background: var(--primary-wash);
+}
+
+.journey-step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.journey-step-time {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.journey-task-pill {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ==========================================================================
+   Hydration Widget - Water Drops Experience
+   ========================================================================== */
+.hydration-widget {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.water-drops-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.water-drop-item {
+  width: 46px;
+  height: 56px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  border: 2px solid var(--accent-blue);
+  background: var(--accent-blue-soft);
+  color: var(--accent-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.water-drop-item.filled {
+  background: var(--accent-blue);
+  color: #FFFFFF;
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(112, 156, 181, 0.35);
+}
+
+/* ==========================================================================
+   Game Interface - Calm, Tactile, Peaceful
+   ========================================================================== */
+.game-container {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  padding: 2.25rem;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-card);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1.5px solid var(--border-subtle);
+  margin-bottom: 2rem;
+}
+
+.game-stats-pill {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  background: var(--bg-surface);
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Tactile Warm Memory Cards Grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+@media (max-width: 680px) {
+  .cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.85rem;
+  }
+}
+
+.memory-card {
+  aspect-ratio: 1;
+  background: var(--bg-surface);
+  border: 3px solid var(--border);
+  border-radius: var(--radius-lg);
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s, border-color 0.2s;
+  box-shadow: var(--shadow-sm);
+  min-height: 105px;
+}
+
+.memory-card:hover:not(.flipped):not(.matched) {
+  transform: translateY(-4px) scale(1.03);
+  border-color: var(--primary);
+  background: #FFFFFF;
+}
+
+.memory-card.flipped {
+  background: #FFFFFF;
+  border-color: var(--primary);
+  transform: rotateY(180deg);
+  box-shadow: var(--shadow-card);
+}
+
+.memory-card.matched {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  cursor: default;
+  opacity: 0.95;
+}
+
+.memory-card-back-icon {
+  font-size: 2.2rem;
+  color: var(--primary);
+}
+
+/* ==========================================================================
+   Pattern Recognition Game Elements
+   ========================================================================== */
+.pattern-pad {
+  aspect-ratio: 1;
+  border-radius: var(--radius-xl);
+  border: 4px solid transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: white;
+  transition: transform 0.16s ease, filter 0.16s ease;
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem;
+}
+
+.pattern-pad:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.pattern-pad.active {
+  filter: brightness(1.25);
+  transform: scale(1.1);
+  box-shadow: 0 0 35px rgba(255, 255, 255, 0.8), 0 8px 25px currentColor;
+}
+
+/* ==========================================================================
+   Reminders & Medication List Cards
+   ========================================================================== */
+.reminder-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  border: 2px solid var(--border);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.reminder-card.status-taken {
+  border-color: var(--success);
+  background: rgba(82, 138, 102, 0.05);
+}
+
+.reminder-card.status-skipped {
+  border-color: var(--danger);
+  background: rgba(189, 83, 67, 0.05);
+}
+
+.reminder-card.status-snoozed {
+  border-color: var(--accent-gold);
+  background: rgba(229, 184, 92, 0.06);
+}
+
+.reminder-title {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+/* ==========================================================================
+   Caregiver Analytics - Warm Medical Styling
+   ========================================================================== */
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.25rem;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  padding: 1.85rem;
+  border-radius: var(--radius-xl);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stat-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.stat-card-value {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.1;
+  font-family: var(--font-heading);
+}
+
+.stat-card-sub {
+  font-size: 0.95rem;
+  color: var(--text-subtle);
+  margin-top: 0.45rem;
+}
+
+.alert-banner {
+  padding: 1.25rem 1.6rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.alert-banner.warning {
+  background: var(--accent-gold-soft);
+  color: #7D4C0E;
+  border-left: 6px solid var(--warning);
+}
+
+.alert-banner.info {
+  background: var(--accent-blue-soft);
+  color: #29536B;
+  border-left: 6px solid var(--accent-blue);
+}
+
+/* Medical Disclaimer Banner */
+.disclaimer-banner {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.5rem;
+  margin-top: 2.5rem;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  line-height: 1.5;
+}
+
+/* Reduced Motion Preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
