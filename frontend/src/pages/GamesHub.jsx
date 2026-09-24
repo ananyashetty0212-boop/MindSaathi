@@ -37,7 +37,7 @@ export const GamesHub = () => {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
               <div className="elder-action-icon" style={{ background: 'var(--primary-soft)', color: 'var(--primary-dark)', fontSize: '2.8rem' }}>
-                🦏
+                🧩
               </div>
 
               <span style={{
@@ -53,11 +53,11 @@ export const GamesHub = () => {
             </div>
 
             <h2 className="elder-action-title" style={{ fontSize: '2.1rem' }}>
-              Kaziranga Memory Match
+              Memory Match
             </h2>
 
             <p className="elder-action-sub" style={{ fontSize: '1.25rem', margin: '0.85rem 0 1.75rem 0' }}>
-              Remember the pictures and find the matching pair of tea leaves and gentle rhinos.
+              Remember the pictures and find the matching pairs at your own pace.
             </p>
           </div>
 
@@ -80,7 +80,7 @@ export const GamesHub = () => {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
               <div className="elder-action-icon" style={{ background: 'var(--secondary-soft)', color: 'var(--secondary)', fontSize: '2.8rem' }}>
-                🥁
+                🔷
               </div>
 
               <span style={{
@@ -96,11 +96,11 @@ export const GamesHub = () => {
             </div>
 
             <h2 className="elder-action-title" style={{ fontSize: '2.1rem' }}>
-              Brahmaputra Pattern Sequence
+              Pattern Recognition
             </h2>
 
             <p className="elder-action-sub" style={{ fontSize: '1.25rem', margin: '0.85rem 0 1.75rem 0' }}>
-              Watch the gentle light sequence and tap the pads in order with calming river sounds.
+              Watch the sequence and tap the pads in the same order.
             </p>
           </div>
 

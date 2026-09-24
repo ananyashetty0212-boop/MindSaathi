@@ -1,32 +1,11 @@
 /**
  * MindSaathi - Adaptive Cognitive Engine (ACE)
- * 
- * SIH26003: AI-Based Cognitive Gaming and Memory Assistance Platform
- * for Elderly Dementia Patients in the North Eastern Region (NER).
- * 
- * IMPORTANT DISCLAIMER:
- * This algorithm is strictly an assistive engagement tuning and difficulty adaptation tool.
- * It DOES NOT provide medical diagnosis, clinical staging, or pathology assessment for dementia,
- * Alzheimer's, or any other neurodegenerative disease.
+ *
+ * This engine adapts activity difficulty using interaction data.
+ * It is an assistive engagement feature and is NOT a medical diagnostic tool.
  */
 
 class AdaptiveCognitiveEngine {
-  /**
-   * Evaluate a completed cognitive game session and provide adaptive recommendations.
-   * 
-   * @param {Object} metrics
-   * @param {string} metrics.gameType - 'memory_match' | 'pattern_recognition' | etc.
-   * @param {number} metrics.accuracy - 0 to 100 percentage
-   * @param {number} metrics.responseTimeMs - Average response time in milliseconds
-   * @param {number} metrics.mistakes - Number of incorrect attempts
-   * @param {number} metrics.hintsUsed - Number of hints requested
-   * @param {number} metrics.completionRate - 0 to 100 percentage of puzzle completed
-   * @param {string} metrics.currentDifficulty - 'EASY' | 'MODERATE' | 'CHALLENGING'
-   * @param {Array<Object>} [recentSessions=[]] - Historical session records for baseline comparison
-   * 
-   * @returns {Object} Evaluation report containing performance score, difficulty recommendation,
-   *                   and engagement observations.
-   */
   static evaluatePerformance(metrics, recentSessions = []) {
     const {
       gameType = 'memory_match',
@@ -38,96 +17,123 @@ class AdaptiveCognitiveEngine {
       currentDifficulty = 'EASY'
     } = metrics;
 
-    // 1. Accuracy Component (Weight: 45%)
-    // Bound strictly between 0 and 100
     const clampedAccuracy = Math.min(100, Math.max(0, Number(accuracy) || 0));
+    const safeResponseTime = Math.max(0, Number(responseTimeMs) || 0);
+    const safeMistakes = Math.max(0, Number(mistakes) || 0);
+    const safeHints = Math.max(0, Number(hintsUsed) || 0);
+    const clampedCompletion = Math.min(100, Math.max(0, Number(completionRate) || 0));
+
+    // Accuracy: 45%
     const accuracyScore = clampedAccuracy * 0.45;
 
-    // 2. Response Speed Component (Weight: 25%)
-    // Normalized response curve for elderly ergonomics:
-    // Ideal elderly response range: 1,500ms to 4,000ms.
-    // Overly fast (<800ms) might indicate hasty random clicking.
-    // Extremely slow (>12,000ms) indicates fatigue or struggle.
+    // Response time: 25%
     let speedScore = 25;
-    if (responseTimeMs < 800) {
-      speedScore = 18; // slight penalty for hasty random tapping
-    } else if (responseTimeMs <= 3500) {
-      speedScore = 25; // optimal pacing
-    } else if (responseTimeMs <= 7000) {
-      const penalty = ((responseTimeMs - 3500) / 3500) * 10;
+    if (safeResponseTime < 800) {
+      speedScore = 18;
+    } else if (safeResponseTime <= 3500) {
+      speedScore = 25;
+    } else if (safeResponseTime <= 7000) {
+      const penalty = ((safeResponseTime - 3500) / 3500) * 10;
       speedScore = Math.max(12, 25 - penalty);
     } else {
-      const penalty = 13 + Math.min(10, ((responseTimeMs - 7000) / 5000) * 8);
+      const penalty = 13 + Math.min(10, ((safeResponseTime - 7000) / 5000) * 8);
       speedScore = Math.max(5, 25 - penalty);
     }
 
-    // 3. Mistake & Error Factor (Weight: 15%)
-    // Gentle mistake scaling so elderly users are not discouraged by trial and error
-    const mistakePenalty = Math.min(15, (mistakes * 1.5));
+    // Mistakes: 15%
+    const mistakePenalty = Math.min(15, safeMistakes * 1.5);
     const mistakeScore = Math.max(0, 15 - mistakePenalty);
 
-    // 4. Assistance & Autonomy Factor (Weight: 10%)
-    // Hints used are positive for engagement, but reflect greater assistance needed
-    const hintPenalty = Math.min(10, hintsUsed * 2.5);
+    // Hints/assistance: 10%
+    const hintPenalty = Math.min(10, safeHints * 2.5);
     const autonomyScore = Math.max(0, 10 - hintPenalty);
 
-    // 5. Completion Factor (Weight: 5%)
-    const clampedCompletion = Math.min(100, Math.max(0, Number(completionRate) || 100));
+    // Completion: 5%
     const completionScore = (clampedCompletion / 100) * 5;
 
-    // Raw calculated score (0 - 100)
-    const rawScore = Math.round(
-      accuracyScore + speedScore + mistakeScore + autonomyScore + completionScore
+    const performanceScore = Math.min(
+      100,
+      Math.max(
+        10,
+        Math.round(
+          accuracyScore + speedScore + mistakeScore + autonomyScore + completionScore
+        )
+      )
     );
-    const performanceScore = Math.min(100, Math.max(10, rawScore));
 
-    // Baseline calculation from recent sessions (if available)
+    // Compare against the user's recent interaction baseline.
+    const validSessions = Array.isArray(recentSessions)
+      ? recentSessions.filter((session) => Number.isFinite(Number(session.performanceScore)))
+      : [];
+
+    const matchingTypeSessions = validSessions.filter(
+      (session) => session.gameType === gameType
+    );
+
+    const baselinePool = matchingTypeSessions.length >= 2
+      ? matchingTypeSessions.slice(0, 10)
+      : validSessions.slice(0, 10);
+
     let baselineAverage = performanceScore;
     let unusualChangeDetected = false;
     let unusualChangeDetails = null;
 
-    if (Array.isArray(recentSessions) && recentSessions.length >= 2) {
-      const matchingTypeSessions = recentSessions.filter(s => s.gameType === gameType);
-      const targetPool = matchingTypeSessions.length >= 2 ? matchingTypeSessions : recentSessions;
-      
-      const totalScore = targetPool.reduce((acc, s) => acc + (s.performanceScore || 70), 0);
-      baselineAverage = Math.round(totalScore / targetPool.length);
+    if (baselinePool.length >= 2) {
+      baselineAverage = Math.round(
+        baselinePool.reduce(
+          (total, session) => total + Number(session.performanceScore || 0),
+          0
+        ) / baselinePool.length
+      );
 
-      // Detect meaningful deviation (> 25 points drop or sharp latency increase)
       const scoreDrop = baselineAverage - performanceScore;
+
       if (scoreDrop >= 25) {
         unusualChangeDetected = true;
-        unusualChangeDetails = `Performance score dropped by ${scoreDrop} points compared to patient baseline (${baselineAverage}). Patient might be tired or distracted.`;
-      } else if (responseTimeMs > 9000) {
+        unusualChangeDetails = `Recent activity score is ${scoreDrop} points below the user's recent baseline (${baselineAverage}).`;
+      } else if (safeResponseTime > 9000) {
         unusualChangeDetected = true;
-        unusualChangeDetails = `Response latency is significantly elevated (${Math.round(responseTimeMs / 1000)}s). Consider a calming rest or hydration reminder.`;
+        unusualChangeDetails = `Recent response time is unusually high (${Math.round(safeResponseTime / 1000)} seconds).`;
+      } else if (clampedCompletion < 60) {
+        unusualChangeDetected = true;
+        unusualChangeDetails = 'The activity was completed only partially compared with recent sessions.';
       }
     }
 
-    // Recommended Difficulty determination
-    let recommendedDifficulty = currentDifficulty;
+    let recommendedDifficulty = currentDifficulty || 'EASY';
+
     if (performanceScore >= 85 && clampedAccuracy >= 80) {
-      if (currentDifficulty === 'EASY') recommendedDifficulty = 'MODERATE';
-      else if (currentDifficulty === 'MODERATE') recommendedDifficulty = 'CHALLENGING';
-      else recommendedDifficulty = 'CHALLENGING';
-    } else if (performanceScore < 50 || mistakes > 8) {
-      if (currentDifficulty === 'CHALLENGING') recommendedDifficulty = 'MODERATE';
-      else recommendedDifficulty = 'EASY';
+      if (recommendedDifficulty === 'EASY') {
+        recommendedDifficulty = 'MODERATE';
+      } else {
+        recommendedDifficulty = 'CHALLENGING';
+      }
+    } else if (performanceScore < 50 || safeMistakes > 8) {
+      if (recommendedDifficulty === 'CHALLENGING') {
+        recommendedDifficulty = 'MODERATE';
+      } else {
+        recommendedDifficulty = 'EASY';
+      }
     }
 
-    // Contextual Next Activity Recommendation
-    let nextActivityRecommendation = 'Memory Match (Gentle North-East Flora & Fauna)';
-    let activityRationale = 'Maintain consistent gentle visual-spatial stimulation.';
+    let nextActivityRecommendation = 'Memory Match';
+    let activityRationale = 'Continue with a familiar memory activity at a comfortable pace.';
 
     if (unusualChangeDetected) {
-      nextActivityRecommendation = 'Hydration & Calming Voice Breathing Exercise';
-      activityRationale = 'A gentle break is recommended before resuming cognitive games.';
+      nextActivityRecommendation = 'Take a short break, then choose a gentle activity';
+      activityRationale = 'A lighter pace may be more comfortable before another cognitive activity.';
     } else if (gameType === 'memory_match') {
-      nextActivityRecommendation = 'Pattern Recognition (Musical Rhythm of Assam)';
-      activityRationale = 'Switch from visual paired association to sequential sensory pattern processing.';
+      nextActivityRecommendation = 'Pattern Recognition';
+      activityRationale = 'Switch to a sequential attention activity after a memory task.';
     } else if (gameType === 'pattern_recognition') {
-      nextActivityRecommendation = 'Daily Routine Recall (Family and Familiar Places)';
-      activityRationale = 'Reinforce autobiographical and prospective episodic memory.';
+      nextActivityRecommendation = 'Memory Match';
+      activityRationale = 'Return to visual recall after a pattern-based activity.';
+    } else if (gameType === 'attention_game') {
+      nextActivityRecommendation = 'Memory Match';
+      activityRationale = 'Alternate attention work with a familiar recall activity.';
+    } else if (gameType === 'daily_routine_recall') {
+      nextActivityRecommendation = 'Pattern Recognition';
+      activityRationale = 'Continue with a short attention-focused activity.';
     }
 
     return {
@@ -147,7 +153,8 @@ class AdaptiveCognitiveEngine {
       unusualChangeDetails,
       baselineAverage,
       timestamp: new Date().toISOString(),
-      clinicalDisclaimer: 'MindSaathi metrics represent assistive cognitive interaction data only and are not intended for medical diagnosis or clinical classification.'
+      clinicalDisclaimer:
+        'MindSaathi metrics represent assistive cognitive interaction data only and are not intended for medical diagnosis or clinical classification.'
     };
   }
 }
