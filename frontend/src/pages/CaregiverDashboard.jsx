@@ -256,6 +256,40 @@ export default function CaregiverDashboard() {
         )}
       </section>
 
+      <section
+        className="elder-action-box"
+        style={{
+          padding: '1.7rem',
+          background: 'linear-gradient(135deg, var(--bg-card), var(--primary-soft))'
+        }}
+      >
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '1rem',
+          flexWrap: 'wrap'
+        }}>
+          <div>
+            <h2 style={{ color: 'var(--primary-dark)', marginBottom: '.35rem' }}>
+              Daily Routine
+            </h2>
+            <p style={{ color: 'var(--text-muted)', margin: 0 }}>
+              Manage the same shared routine used by {elder.name}.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="btn-elderly btn-primary-garden"
+            onClick={() => { window.location.href = '/routine'; }}
+          >
+            <CalendarDays size={20} />
+            <span>Manage Routine</span>
+          </button>
+        </div>
+      </section>
+
       <section className="elder-action-box" style={{ padding: '1.7rem' }}>
         <h2 style={{ color: 'var(--primary-dark)' }}>Medication Confirmation</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(170px,1fr))', gap: '1rem', marginTop: '1rem' }}>

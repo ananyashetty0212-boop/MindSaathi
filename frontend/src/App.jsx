@@ -8,6 +8,7 @@ import GamesHub from './pages/GamesHub';
 import MemoryMatchGame from './pages/MemoryMatchGame';
 import PatternRecognitionGame from './pages/PatternRecognitionGame';
 import RemindersPage from './pages/RemindersPage';
+import RoutinePage from './pages/RoutinePage';
 import CaregiverDashboard from './pages/CaregiverDashboard';
 import { useAuth } from './context/AuthContext';
 
@@ -31,6 +32,7 @@ export const App = () => (
         <Route path="/games/memory" element={<ProtectedRoute roles={['elderly']}><MemoryMatchGame /></ProtectedRoute>} />
         <Route path="/games/pattern" element={<ProtectedRoute roles={['elderly']}><PatternRecognitionGame /></ProtectedRoute>} />
         <Route path="/reminders" element={<ProtectedRoute roles={['elderly']}><RemindersPage /></ProtectedRoute>} />
+        <Route path="/routine" element={<ProtectedRoute roles={['elderly', 'caregiver']}><RoutinePage /></ProtectedRoute>} />
         <Route path="/caregiver" element={<ProtectedRoute roles={['caregiver']}><CaregiverDashboard /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

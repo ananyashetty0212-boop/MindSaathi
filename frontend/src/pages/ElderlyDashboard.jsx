@@ -203,13 +203,13 @@ export const ElderlyDashboard = () => {
 
           {/* Action 3: My Day */}
           <ElderActionCard
-            to="/reminders"
+            to="/routine"
             icon="📅"
             iconBg="var(--accent-gold-soft)"
             iconColor="#A06414"
             borderColor="var(--accent-gold)"
             title="My Day"
-            subtitle="Herbal tea, garden veranda walk, prayer, and rest."
+            subtitle="Walks, meals, rest, and the little activities that make up your day."
             actionText="View Routine"
           />
 
