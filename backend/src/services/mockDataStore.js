@@ -215,34 +215,77 @@ class MockDataStore {
     return this.reminders;
   }
 
+  getReminderById(id, patientId = null) {
+    return this.reminders.find(
+      item =>
+        String(item._id) === String(id) &&
+        (!patientId || String(item.patientId) === String(patientId))
+    ) || null;
+  }
+
+  createReminder(data) {
+    const reminder = {
+      _id: `rem_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      patientId: String(data.patientId),
+      title: data.title,
+      category: data.category || 'medicine',
+      dosageOrInstruction: data.dosageOrInstruction || '',
+      scheduledTime: data.scheduledTime,
+      timeOfDay: data.timeOfDay || 'Morning',
+      status: 'pending',
+      confirmationTime: null,
+      confirmationNote: null,
+      repeatDaily: data.repeatDaily !== false,
+      active: data.active !== false,
+      snoozeUntil: null,
+      snoozeCount: 0,
+      lastActionAt: null,
+      createdByRole: data.createdByRole || 'system',
+      createdById: data.createdById || null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    this.reminders.push(reminder);
+    return reminder;
+  }
+
+  updateReminder(id, patientId, updates) {
+    const reminder = this.getReminderById(id, patientId);
+    if (!reminder) return null;
+
+    Object.assign(reminder, updates);
+    reminder.updatedAt = new Date();
+    return reminder;
+  }
+
   updateReminderStatus(
     id,
+    patientId,
     status,
-    note = null
+    note = null,
+    snoozeUntil = null
   ) {
-
-    const reminder =
-      this.reminders.find(
-        item =>
-          String(item._id) === String(id)
-      );
+    const reminder = this.getReminderById(id, patientId);
 
     if (!reminder) {
       return null;
     }
 
     reminder.status = status;
-
     reminder.confirmationTime =
-      status === 'pending'
+      status === 'pending' || status === 'snoozed'
         ? null
         : new Date();
-
-    reminder.confirmationNote =
-      note || null;
-
-    reminder.updatedAt =
-      new Date();
+    reminder.confirmationNote = note || null;
+    reminder.snoozeUntil =
+      status === 'snoozed' ? snoozeUntil : null;
+    reminder.snoozeCount =
+      status === 'snoozed'
+        ? Number(reminder.snoozeCount || 0) + 1
+        : 0;
+    reminder.lastActionAt = new Date();
+    reminder.updatedAt = new Date();
 
     return reminder;
   }

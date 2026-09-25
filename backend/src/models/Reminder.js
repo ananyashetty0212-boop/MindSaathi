@@ -70,6 +70,37 @@ const ReminderSchema = new mongoose.Schema(
     repeatDaily: {
       type: Boolean,
       default: true
+    },
+
+    active: {
+      type: Boolean,
+      default: true
+    },
+
+    snoozeUntil: {
+      type: Date,
+      default: null
+    },
+
+    snoozeCount: {
+      type: Number,
+      default: 0
+    },
+
+    lastActionAt: {
+      type: Date,
+      default: null
+    },
+
+    createdByRole: {
+      type: String,
+      enum: ['elderly', 'caregiver', 'system'],
+      default: 'system'
+    },
+
+    createdById: {
+      type: String,
+      default: null
     }
   },
   {
@@ -79,7 +110,4 @@ const ReminderSchema = new mongoose.Schema(
 
 module.exports =
   mongoose.models.Reminder ||
-  mongoose.model(
-    'Reminder',
-    ReminderSchema
-  );
+  mongoose.model('Reminder', ReminderSchema);

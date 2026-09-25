@@ -14,7 +14,11 @@ export function getSession() {
 }
 
 export function saveSession(session) {
-  sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  sessionStorage.setItem(
+    SESSION_KEY,
+    JSON.stringify(session)
+  );
+
   return session;
 }
 
@@ -50,10 +54,13 @@ async function request(endpoint, options = {}) {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers
-  });
+  const response = await fetch(
+    `${API_BASE}${endpoint}`,
+    {
+      ...options,
+      headers
+    }
+  );
 
   let data = {};
 
@@ -70,17 +77,27 @@ async function request(endpoint, options = {}) {
       `Request failed with status ${response.status}`;
 
     const error = new Error(message);
+
     error.status = response.status;
     error.data = data;
+
     throw error;
   }
 
   return data;
 }
 
+/* =========================================================
+   HEALTH
+   ========================================================= */
+
 export async function checkHealth() {
   return request('/health');
 }
+
+/* =========================================================
+   AUTH
+   ========================================================= */
 
 export async function registerCaregiver(data) {
   return request('/auth/caregiver/register', {
@@ -99,7 +116,9 @@ export async function loginCaregiver(data) {
 export async function loginElder(pin) {
   return request('/auth/elder/login', {
     method: 'POST',
-    body: JSON.stringify({ pin })
+    body: JSON.stringify({
+      pin
+    })
   });
 }
 
@@ -111,52 +130,164 @@ export async function getCurrentProfile() {
   return getMe();
 }
 
-export async function evaluateCognitiveSession(data) {
+/* =========================================================
+   COGNITIVE
+   ========================================================= */
+
+export async function evaluateCognitiveSession(
+  data
+) {
   const elderId = getElderId();
 
   return request('/cognitive/evaluate', {
     method: 'POST',
     body: JSON.stringify({
       ...data,
-      patientId: data?.patientId || elderId,
-      elderId: data?.elderId || elderId
+      patientId:
+        data?.patientId || elderId,
+      elderId:
+        data?.elderId || elderId
     })
   });
 }
 
 export async function getCognitiveHistory() {
   const elderId = getElderId();
+
   const query = elderId
-    ? `?patientId=${encodeURIComponent(elderId)}`
+    ? `?patientId=${encodeURIComponent(
+        elderId
+      )}`
     : '';
 
-  return request(`/cognitive/history${query}`);
+  return request(
+    `/cognitive/history${query}`
+  );
 }
+
+/* =========================================================
+   REMINDERS
+   ========================================================= */
 
 export async function getReminders() {
   const elderId = getElderId();
+
   const query = elderId
-    ? `?patientId=${encodeURIComponent(elderId)}`
+    ? `?patientId=${encodeURIComponent(
+        elderId
+      )}`
     : '';
 
-  return request(`/reminders${query}`);
+  return request(
+    `/reminders${query}`
+  );
 }
 
-export async function updateReminderStatus(reminderId, status, note = '') {
-  return request(`/reminders/${encodeURIComponent(reminderId)}/status`, {
-    method: 'PATCH',
-    body: JSON.stringify({ status, note })
+export async function createReminder(
+  data
+) {
+  const elderId = getElderId();
+
+  return request('/reminders', {
+    method: 'POST',
+    body: JSON.stringify({
+      ...data,
+      patientId:
+        data?.patientId || elderId
+    })
   });
 }
 
-export async function getCaregiverOverview(elderId = null) {
-  const selectedElderId = elderId || getElderId();
-  const query = selectedElderId
-    ? `?patientId=${encodeURIComponent(selectedElderId)}`
+export async function updateReminder(
+  reminderId,
+  data
+) {
+  const elderId = getElderId();
+
+  return request(
+    `/reminders/${encodeURIComponent(
+      reminderId
+    )}`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({
+        ...data,
+        patientId:
+          data?.patientId || elderId
+      })
+    }
+  );
+}
+
+export async function deleteReminder(
+  reminderId
+) {
+  const elderId = getElderId();
+
+  const query = elderId
+    ? `?patientId=${encodeURIComponent(
+        elderId
+      )}`
     : '';
 
-  return request(`/caregiver/overview${query}`);
+  return request(
+    `/reminders/${encodeURIComponent(
+      reminderId
+    )}${query}`,
+    {
+      method: 'DELETE'
+    }
+  );
 }
+
+export async function updateReminderStatus(
+  reminderId,
+  status,
+  note = '',
+  snoozeUntil = null
+) {
+  const elderId = getElderId();
+
+  return request(
+    `/reminders/${encodeURIComponent(
+      reminderId
+    )}/status`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({
+        status,
+        note,
+        snoozeUntil,
+        patientId: elderId
+      })
+    }
+  );
+}
+
+/* =========================================================
+   CAREGIVER
+   ========================================================= */
+
+export async function getCaregiverOverview(
+  elderId = null
+) {
+  const selectedElderId =
+    elderId || getElderId();
+
+  const query = selectedElderId
+    ? `?patientId=${encodeURIComponent(
+        selectedElderId
+      )}`
+    : '';
+
+  return request(
+    `/caregiver/overview${query}`
+  );
+}
+
+/* =========================================================
+   API OBJECT
+   ========================================================= */
 
 export const api = {
   getSession,
@@ -165,16 +296,24 @@ export const api = {
   getToken,
   getElderId,
   request,
+
   checkHealth,
+
   registerCaregiver,
   loginCaregiver,
   loginElder,
   getMe,
   getCurrentProfile,
+
   evaluateCognitiveSession,
   getCognitiveHistory,
+
   getReminders,
+  createReminder,
+  updateReminder,
+  deleteReminder,
   updateReminderStatus,
+
   getCaregiverOverview
 };
 
